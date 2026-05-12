@@ -38,7 +38,7 @@ export const baseEndpoints: EndpointConfig[] = [
   {
     key: "auditLogs",
     label: "Audit Logs",
-    path: "/api/v1/audit-logs?limit=25",
+    path: "/api/v1/audit/logs?limit=25",
     description: "Recent allow and deny decisions with trace metadata.",
     icon: <FileClock className="h-4 w-4" />,
     columns: ["id", "created_at", "decision", "deny_code", "actor_user_id", "resource_type", "resource_id", "action"],
