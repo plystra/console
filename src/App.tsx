@@ -426,72 +426,78 @@ export default function App() {
             </Panel>
           </aside>
 
-          <section className="grid gap-4">
-            <div className="flex flex-wrap gap-2">
-              {endpoints.map((endpoint) => (
-                <Button
-                  key={endpoint.key}
-                  variant={activeEndpoint === endpoint.key ? "default" : "outline"}
-                  onClick={() => {
-                    setActiveEndpoint(endpoint.key);
-                    void loadEndpoint(endpoint);
-                  }}
-                >
-                  {endpoint.icon}
-                  {endpoint.label}
-                </Button>
-              ))}
-            </div>
+          <section className="min-w-0">
+            <div className="border bg-card">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b bg-muted/40 p-2">
+                {endpoints.map((endpoint) => (
+                  <Button
+                    key={endpoint.key}
+                    size="sm"
+                    variant={activeEndpoint === endpoint.key ? "default" : "outline"}
+                    onClick={() => {
+                      setActiveEndpoint(endpoint.key);
+                      void loadEndpoint(endpoint);
+                    }}
+                  >
+                    {endpoint.icon}
+                    {endpoint.label}
+                  </Button>
+                ))}
+              </div>
 
-            <Panel
-              title={activeConfig.label}
-              description={activeConfig.description}
-              action={
+              <div className="flex items-start justify-between gap-3 border-b px-4 py-3">
+                <div>
+                  <h2 className="text-sm font-semibold">{activeConfig.label}</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">{activeConfig.description}</p>
+                </div>
                 <Button variant="outline" size="sm" onClick={() => void loadEndpoint(activeConfig)}>
                   <RefreshCw className="h-4 w-4" />
                   Reload
                 </Button>
-              }
-            >
-              <DataTable
-                columns={activeConfig.columns}
-                state={lists[activeConfig.key]}
-                rowActions={
-                  activeConfig.key === "adminGrants"
-                    ? (row) => (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={row.status !== "active"}
-                          onClick={() => void revokeAdminGrant(valueText(row.id))}
-                        >
-                          <Ban className="h-3.5 w-3.5" />
-                          Revoke
-                        </Button>
-                      )
-                    : undefined
-                }
-              />
-            </Panel>
+              </div>
+              <div className="p-4">
+                <DataTable
+                  columns={activeConfig.columns}
+                  state={lists[activeConfig.key]}
+                  rowActions={
+                    activeConfig.key === "adminGrants"
+                      ? (row) => (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={row.status !== "active"}
+                            onClick={() => void revokeAdminGrant(valueText(row.id))}
+                          >
+                            <Ban className="h-3.5 w-3.5" />
+                            Revoke
+                          </Button>
+                        )
+                      : undefined
+                  }
+                />
+              </div>
+            </div>
 
-            <Panel title="Authorization Inspector" description="Run authz/explain with the same admin-protected Core API path.">
-              <form className="grid gap-3" onSubmit={(event) => void runAuthz(event)}>
-                <Textarea value={authzBody} onChange={(event) => setAuthzBody(event.target.value)} spellCheck={false} />
-                <div className="flex items-center gap-2">
-                  <Button type="submit">
-                    <ShieldCheck className="h-4 w-4" />
-                    Check decision
-                  </Button>
-                  {authzResult.data ? (
-                    <Badge variant={isAllowDecision(authzResult.data) ? "default" : "danger"}>
-                      {isAllowDecision(authzResult.data) ? "allow" : "deny"}
-                    </Badge>
-                  ) : null}
-                  {authzResult.error ? <ErrorText>{authzResult.error}</ErrorText> : null}
-                </div>
-              </form>
-              {authzResult.data ? <JsonPreview value={unwrapData(authzResult.data)} /> : null}
-            </Panel>
+            <div className="mt-6">
+              <Panel title="Authorization Inspector" description="Run authz/explain with the same admin-protected Core API path.">
+                <form className="grid gap-3" onSubmit={(event) => void runAuthz(event)}>
+                  <Textarea value={authzBody} onChange={(event) => setAuthzBody(event.target.value)} spellCheck={false} />
+                  <div className="flex items-center gap-2">
+                    <Button type="submit">
+                      <ShieldCheck className="h-4 w-4" />
+                      Check decision
+                    </Button>
+                    {authzResult.data ? (
+                      <Badge variant={isAllowDecision(authzResult.data) ? "default" : "danger"}>
+                        {isAllowDecision(authzResult.data) ? "allow" : "deny"}
+                      </Badge>
+                    ) : null}
+                    {authzResult.error ? <ErrorText>{authzResult.error}</ErrorText> : null}
+                  </div>
+                </form>
+                {authzResult.data ? <JsonPreview value={unwrapData(authzResult.data)} /> : null}
+              </Panel>
+            </div>
           </section>
         </section>
       </div>
