@@ -2,7 +2,7 @@ import { ApiSettings, JsonMap } from "@/types";
 
 export function defaultSettings(): ApiSettings {
   return {
-    baseUrl: localStorage.getItem("plystra.console.baseUrl") || "http://localhost:8080",
+    baseUrl: localStorage.getItem("plystra.console.baseUrl") || import.meta.env.VITE_PLYSTRA_API_URL || "http://localhost:8080",
     accessToken: localStorage.getItem("plystra.console.accessToken") || "",
   };
 }
