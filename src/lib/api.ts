@@ -3,12 +3,16 @@ import { ApiSettings, JsonMap } from "@/types";
 export function defaultSettings(): ApiSettings {
   const legacyAccessToken = localStorage.getItem("plystra.console.accessToken") || "";
   if (legacyAccessToken) {
-    sessionStorage.setItem("plystra.console.accessToken", legacyAccessToken);
     localStorage.removeItem("plystra.console.accessToken");
+  }
+  const legacyAPIKey = localStorage.getItem("plystra.console.apiKey") || "";
+  if (legacyAPIKey) {
+    sessionStorage.setItem("plystra.console.apiKey", legacyAPIKey);
+    localStorage.removeItem("plystra.console.apiKey");
   }
   return {
     baseUrl: localStorage.getItem("plystra.console.baseUrl") || import.meta.env.VITE_PLYSTRA_API_URL || "http://localhost:8080",
-    accessToken: sessionStorage.getItem("plystra.console.accessToken") || "",
+    apiKey: sessionStorage.getItem("plystra.console.apiKey") || "",
   };
 }
 

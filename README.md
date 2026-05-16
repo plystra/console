@@ -1,23 +1,17 @@
-# Plystra Admin Console
+# Plystra Console
 
-React + shadcn/ui-style admin console for Plystra Core. It talks to Core through `/api/v1` and stores only the API base URL and the current Bearer access token in local browser storage.
+React inspector for the Plystra Kernel Phase 1 API. It connects to `/api/v1`, stores only the API base URL in `localStorage`, and keeps the scoped server API key in `sessionStorage`.
 
 ## Run
 
-Start Core first. With Docker:
+Start PostgreSQL, then run the kernel from the `kernel` repo:
 
 ```powershell
-cd ..\plystra
-docker compose up -d --build plystra-core
-go run .\cmd\plystractl migrate up
-```
-
-Or run Core directly:
-
-```powershell
-cd ..\plystra
-$env:PLYSTRA_DATABASE_URL = "postgres://plystra:plystra@localhost:5432/plystra?sslmode=disable"
-go run .\cmd\plystrad
+cd ..\kernel
+$env:DATABASE_URL = "postgres://plystra:plystra@localhost:5432/plystra?sslmode=disable"
+$env:PLYSTRA_API_KEY = "ply_kernel_secret"
+go run .\cmd\plystrad migrate
+go run .\cmd\plystrad serve
 ```
 
 Start the Console:
@@ -32,19 +26,18 @@ Open `http://localhost:5173`, set:
 
 ```text
 API base: http://localhost:8080
-Email: alice@example.com
-Password: plystra-demo
+API key: ply_kernel_secret
 ```
 
-## Included Admin Surfaces
+## Included Surfaces
 
 - System health, readiness, and version.
-- Console overview counters.
-- Users, Spaces, Resource Types, Permissions, Audit Logs, Admin Grants, Plugins, and Templates.
-- Active Space context with Groups, Members, UserMembers, Roles, MemberRoles, and Space Resources.
-- Create User, Space, Resource Type, and Permission.
-- View, create, and revoke AdminGrants for instance, Space, and Group administrators.
-- Authorization Inspector for `/api/v1/authz/explain`.
+- System capability registry.
+- Resource type registry.
+- Context Mode authorization inspector for `/api/v1/authz/explain`.
+- Recent audit log viewer.
+
+Inline actor, resource, and grant context is trusted server-side input. The console is an operator/debugging surface; production applications should construct Context Mode payloads in their own backend.
 
 ## Build
 
