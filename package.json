@@ -1,6 +1,6 @@
 {
   "name": "@plystra/console",
-  "version": "1.0.0-rc104",
+  "version": "1.0.0-rc115",
   "private": true,
   "type": "module",
   "scripts": {
