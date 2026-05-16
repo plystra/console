@@ -1,9 +1,14 @@
 import { ApiSettings, JsonMap } from "@/types";
 
 export function defaultSettings(): ApiSettings {
+  const legacyAccessToken = localStorage.getItem("plystra.console.accessToken") || "";
+  if (legacyAccessToken) {
+    sessionStorage.setItem("plystra.console.accessToken", legacyAccessToken);
+    localStorage.removeItem("plystra.console.accessToken");
+  }
   return {
     baseUrl: localStorage.getItem("plystra.console.baseUrl") || import.meta.env.VITE_PLYSTRA_API_URL || "http://localhost:8080",
-    accessToken: localStorage.getItem("plystra.console.accessToken") || "",
+    accessToken: sessionStorage.getItem("plystra.console.accessToken") || "",
   };
 }
 
@@ -36,6 +41,18 @@ export function valueText(value: unknown) {
     return JSON.stringify(value);
   }
   return String(value);
+}
+
+export function apiErrorText(payload: unknown, fallback: string) {
+  const errorMap = asMap(asMap(payload).error);
+  const message = valueText(errorMap.message || fallback);
+  const code = valueText(errorMap.code);
+  const requestID = valueText(errorMap.request_id || asMap(payload).request_id);
+  const suffix = [
+    code !== "-" ? code : "",
+    requestID !== "-" ? `request_id=${requestID}` : "",
+  ].filter(Boolean);
+  return suffix.length > 0 ? `${message} (${suffix.join(", ")})` : message;
 }
 
 export function isAllowDecision(value: unknown) {

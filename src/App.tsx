@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { baseEndpoints, endpointsForSpace, initialAuthzRequest } from "@/config/endpoints";
-import { asMap, defaultSettings, endpointUrl, isAllowDecision, unwrapData, valueText } from "@/lib/api";
+import { apiErrorText, asMap, defaultSettings, endpointUrl, isAllowDecision, unwrapData, valueText } from "@/lib/api";
 import { APIRequestInit, ApiSettings, EndpointConfig, JsonMap, LoadState } from "@/types";
 
 export default function App() {
@@ -63,7 +63,12 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem("plystra.console.baseUrl", settings.baseUrl);
-    localStorage.setItem("plystra.console.accessToken", settings.accessToken);
+    localStorage.removeItem("plystra.console.accessToken");
+    if (settings.accessToken.trim() === "") {
+      sessionStorage.removeItem("plystra.console.accessToken");
+    } else {
+      sessionStorage.setItem("plystra.console.accessToken", settings.accessToken);
+    }
   }, [settings]);
 
   useEffect(() => {
@@ -99,8 +104,7 @@ export default function App() {
       payload = { error: { message: text || response.statusText } };
     }
     if (!response.ok) {
-      const errorMap = asMap(asMap(payload).error);
-      throw new Error(valueText(errorMap.message || response.statusText));
+      throw new Error(apiErrorText(payload, response.statusText));
     }
     return payload;
   }
