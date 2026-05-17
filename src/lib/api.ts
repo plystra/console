@@ -13,6 +13,8 @@ export function defaultSettings(): ApiSettings {
   return {
     baseUrl: localStorage.getItem("plystra.console.baseUrl") || import.meta.env.VITE_PLYSTRA_API_URL || "http://localhost:8080",
     apiKey: sessionStorage.getItem("plystra.console.apiKey") || "",
+    accessToken: sessionStorage.getItem("plystra.console.accessToken") || "",
+    refreshToken: sessionStorage.getItem("plystra.console.refreshToken") || "",
   };
 }
 
@@ -35,6 +37,20 @@ export function unwrapList(payload: unknown): JsonMap[] {
     return [];
   }
   return data.map((item) => asMap(item));
+}
+
+export function unwrapDataMap(payload: unknown): JsonMap {
+  return asMap(unwrapData(payload));
+}
+
+export function envelopeCount(payload: unknown) {
+  const map = asMap(payload);
+  const pagination = asMap(map.pagination);
+  const total = pagination.total;
+  if (typeof total === "number") {
+    return total;
+  }
+  return unwrapList(payload).length;
 }
 
 export function valueText(value: unknown) {

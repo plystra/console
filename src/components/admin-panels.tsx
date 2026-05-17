@@ -281,7 +281,7 @@ export function AdminGrantForm({
 
 export function MiniForm({ title, onSubmit, children }: { title: string; onSubmit: (event: FormEvent) => Promise<void>; children: ReactNode }) {
   return (
-    <form className="grid gap-2 border p-3" onSubmit={(event) => void onSubmit(event)}>
+    <form className="grid gap-2 border-l pl-3" onSubmit={(event) => void onSubmit(event)}>
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-medium">{title}</h3>
         <Button size="sm" variant="outline" type="submit">
@@ -301,6 +301,7 @@ export function LabeledInput({
   required,
   type,
   options,
+  placeholder,
 }: {
   label: string;
   value: string;
@@ -308,6 +309,7 @@ export function LabeledInput({
   required?: boolean;
   type?: string;
   options?: string[];
+  placeholder?: string;
 }) {
   return (
     <div className="grid gap-1">
@@ -326,7 +328,7 @@ export function LabeledInput({
           ))}
         </select>
       ) : (
-        <Input value={value} onChange={(event) => onChange(event.target.value)} required={required} type={type} />
+        <Input value={value} onChange={(event) => onChange(event.target.value)} required={required} type={type} placeholder={placeholder} />
       )}
     </div>
   );
