@@ -199,12 +199,12 @@ const defaultPluginManifest = JSON.stringify(
     id: "demo.console",
     name: "Console Demo",
     description: "Demo plugin installed from the Plystra Console.",
-    version: "1.0.0",
+    version: "0.0.1",
     source: "console",
     status: "installed",
     manifest_version: "1.0",
     plugin_api_version: "1.0",
-    requires_core: ">=1.0.0 <2.0.0",
+    requires_core: ">=0.0.1 <0.1.0",
     resources: [
       {
         key: "ticket",
